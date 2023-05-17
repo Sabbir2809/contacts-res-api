@@ -1,73 +1,91 @@
 // Dependencies
-const asyncHandler = require('express-async-handler');
 const contactModel = require('../models/contactModel');
 
 //@description: Get All Contacts
 //@route: GET - /api/contacts
 //@access: public
-const getContacts = asyncHandler(async (req, res) => {
+const getContacts = async (req, res) => {
   const contacts = await contactModel.find();
   res.status(200).json(contacts);
-});
+};
 
 //@description: Create New Contact
 //@route: POST - /api/contacts
 //@access: public
-const createContact = asyncHandler(async (req, res) => {
-  // console.log(req.body);
-  const { name, email, phone } = req.body;
-  if (!name || !email || !phone) {
-    res.status(400);
-    throw new Error('All Fields are Mandatory!');
+const createContact = async (req, res) => {
+  try {
+    const { name, email, phone } = req.body;
+
+    if (!name || !email || !phone) {
+      return res.status(400).json({ message: 'All Fields are Mandatory!' });
+    }
+
+    const contact = await contactModel.create({
+      name,
+      email,
+      phone,
+    });
+
+    res.status(201).json(contact);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
-
-  const contact = await contactModel.create({
-    name,
-    email,
-    phone,
-  });
-
-  res.status(201).json(contact);
-});
+};
 
 //@description: get Contact
 //@route: GET - /api/contacts/:id
 //@access: public
-const getContact = asyncHandler(async (req, res) => {
-  const contact = await contactModel.findById(req.params.id);
-  if (!contact) {
-    res.status(404);
-    throw new Error('Contact Not Found');
+const getContact = async (req, res) => {
+  try {
+    const contact = await contactModel.findById(req.params.id);
+
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact Not Found!' });
+    }
+
+    res.status(200).json(contact);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
-  res.status(200).json(contact);
-});
+};
 
 //@description: Update Contact
 //@route: PUT - /api/contacts/:id
 //@access: public
-const updateContact = asyncHandler(async (req, res) => {
-  const contact = await contactModel.findById(req.params.id);
-  if (!contact) {
-    res.status(404);
-    throw new Error('Contact Not Found');
-  }
+const updateContact = async (req, res) => {
+  try {
+    const contact = await contactModel.findById(req.params.id);
 
-  const updatedContact = await contactModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.status(200).json(updatedContact);
-});
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact Not Found!' });
+    }
+
+    const updatedContact = await contactModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    res.status(200).json(updatedContact);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 //@description: Delete Contact
 //@route: DELETE - /api/contacts/:id
 //@access: public
-const deleteContact = asyncHandler(async (req, res) => {
-  const contact = await contactModel.findById(req.params.id);
-  if (!contact) {
-    res.status(404);
-    throw new Error('Contact Not Found');
+const deleteContact = async (req, res) => {
+  try {
+    const contact = await contactModel.findById(req.params.id);
+
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact Not Found!' });
+    }
+
+    await contactModel.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: 'Contact Deleted Successfully' });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
-  await contactModel.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: 'Contact Deleted Successfully' });
-});
+};
 
 // exports
 module.exports = {

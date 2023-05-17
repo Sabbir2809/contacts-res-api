@@ -2,7 +2,7 @@
 const express = require('express');
 const contactRoutes = require('./routes/contactRoutes');
 const connectDB = require('./config/connectionDB');
-const errorHandler = require('./middleware/errorHandler');
+const userRoutes = require('./routes/userRoutes');
 require('dotenv').config();
 
 // app instance of express()
@@ -14,7 +14,7 @@ connectDB();
 // middleware
 app.use(express.json());
 app.use('/api/contacts', contactRoutes);
-app.use(errorHandler);
+app.use('/api/users', userRoutes);
 
 // PORT
 const PORT = process.env.PORT || 8080;
