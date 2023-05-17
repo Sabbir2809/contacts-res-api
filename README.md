@@ -13,3 +13,9 @@
 1. Express Async Handler
 1. MongoDb Setup
 1. Connect Express App to MondoDB Database
+1. Mongoose Schema for Contacts
+1. CRUD Get All Contacts
+1. CRUD Create New Contact
+1. CRUD Get Contact
+1. CRUD Update Contact
+1. CRUD Delete Contact

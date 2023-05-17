@@ -1,15 +1,15 @@
 // Dependencies
 const express = require('express');
 const contactRoutes = require('./routes/contactRoutes');
-const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/connectionDB');
+const errorHandler = require('./middleware/errorHandler');
 require('dotenv').config();
-
-// Database Connection
-connectDB();
 
 // app instance of express()
 const app = express();
+
+// Database Connection
+connectDB();
 
 // middleware
 app.use(express.json());
