@@ -1,17 +1,18 @@
-//@Description: register a user
-//@Route: POST - api/users/register
 const bcrypt = require('bcrypt');
 const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
+//@Description: register a user
+//@Route: POST - api/users/register
 //@Access: public
 const registerUser = async (req, res) => {
+  const { username, email, password } = req.body;
   try {
-    const { username, email, password } = req.body;
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'All Fields are Mandatory!' });
     }
     const userAvailable = await userModel.findOne({ email });
+    console.log(userAvailable);
     if (userAvailable) {
       return res.status(400).json({ message: 'User Already Register' });
     }
@@ -22,11 +23,13 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
+    console.log(user);
     if (user) {
       res.status(201).json({ _id: user.id, email: user.email });
     } else {
       res.status(400).json({ message: 'User data us not valid' });
     }
+    res.status(201).json({ message: 'Register the User' });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -36,8 +39,8 @@ const registerUser = async (req, res) => {
 //@Route: POST - api/users/login
 //@Access: public
 const loginUser = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: 'All Fields are Mandatory!' });
     }
